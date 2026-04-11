@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CarLink · Publica tu vehículo",
+  title: "CarLink - Publica tu vehículo",
   description:
     "Registra tu vehículo en CarLink y comienza a generar ingresos. La plataforma de renta de vehículos más confiable y moderna.",
 };

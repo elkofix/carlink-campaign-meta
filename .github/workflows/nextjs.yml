@@ -11,6 +11,11 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      region:
+        description: 'PostHog Region (us or eu)'
+        required: true
+        default: 'us'
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -65,6 +70,11 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+      - name: Create .env file
+        run: |
+          REGION="${{ github.event.inputs.region || 'us' }}"
+          echo "NEXT_PUBLIC_POSTHOG_KEY=phc_vphs4H6BU9cFYhzXpbDvKNbLkT7Ew9sqHJV7SDw5PGFb" >> .env
+          echo "NEXT_PUBLIC_POSTHOG_HOST=https://${REGION}.i.posthog.com" >> .env
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
       - name: Upload artifact

@@ -103,15 +103,7 @@ export function CampaignLanding() {
           </div>
           <span className="text-xl font-bold gradient-text">CarLink</span>
         </div>
-        <div className="flex space-x-3">
-          <span className="text-secondary-500 hidden text-sm sm:inline">¿Ya tienes cuenta?</span>
-          <button
-            type="button"
-            className="rounded-xl border-2 border-primary-600 bg-transparent px-3 py-1.5 text-sm font-semibold text-primary-600 transition-all duration-200 hover:bg-primary-50"
-          >
-            Iniciar sesión
-          </button>
-        </div>
+
       </nav>
 
       <header className="relative z-10 mx-auto max-w-3xl px-4 pb-12 pt-4 text-center sm:pt-10">
