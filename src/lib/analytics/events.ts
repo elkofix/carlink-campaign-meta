@@ -5,4 +5,5 @@ export const campaignEvents = {
   chatOpened: "campaign_chat_opened",
   chatMessageSent: "campaign_chat_message_sent",
   chatCompleted: "campaign_chat_completed",
+  leadEmailCaptured: "campaign_lead_email_captured",
 } as const;

@@ -7,6 +7,7 @@ export const LEAD_STORAGE_KEY = "carlink_owner_lead_submissions";
 
 export type LeadAnswers = {
   name: string;
+  email: string;
   city: string;
   vehicleBrandModel: string;
   commissionPreference: string;

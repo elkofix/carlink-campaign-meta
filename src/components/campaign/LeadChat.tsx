@@ -5,7 +5,7 @@ import { type LeadAnswers, saveLead } from "@/lib/lead-storage";
 import { usePostHog } from "posthog-js/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type Phase = "name" | "city" | "vehicle" | "commission" | "plan" | "done";
+type Phase = "name" | "email" | "city" | "vehicle" | "commission" | "plan" | "done";
 
 type Msg = { role: "bot" | "user"; text: string };
 
@@ -97,6 +97,7 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
     setPhase("done");
     capture(campaignEvents.chatCompleted, {
       name: finalAnswers.name,
+      email: finalAnswers.email,
       city: finalAnswers.city,
       vehicle: finalAnswers.vehicleBrandModel,
       commission_preference: finalAnswers.commissionPreference,
@@ -120,9 +121,22 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
 
     if (phase === "name") {
       setAnswers((a) => ({ ...a, name: v }));
+      setPhase("email");
+      runBotTyping(() => {
+        pushBot(`Encantado, ${v}. ¿Cuál es tu correo electrónico para enviarte la información?`);
+      });
+      return;
+    }
+    if (phase === "email") {
+      const email = v.toLowerCase();
+      setAnswers((a) => ({ ...a, email }));
+      if (posthog) {
+        posthog.identify(email, { email, name: answers.name });
+      }
+      capture(campaignEvents.leadEmailCaptured, { email });
       setPhase("city");
       runBotTyping(() => {
-        pushBot(`Encantado, ${v}. ¿En qué ciudad te encuentras?`);
+        pushBot("Perfecto. ¿En qué ciudad te encuentras?");
       });
       return;
     }
@@ -163,11 +177,13 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
     if (phase !== "plan" || typing) return;
     pushUser(label);
     const name = answers.name ?? "";
+    const email = answers.email ?? "";
     const city = answers.city ?? "";
     const vehicleBrandModel = answers.vehicleBrandModel ?? "";
     const commissionPreference = answers.commissionPreference ?? "";
     const final: LeadAnswers = {
       name,
+      email,
       city,
       vehicleBrandModel,
       commissionPreference,
@@ -234,9 +250,11 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
               placeholder={
                 phase === "name"
                   ? "Tu nombre"
-                  : phase === "city"
-                    ? "Ciudad"
-                    : "Ej. Nissan Versa 2022"
+                  : phase === "email"
+                    ? "tu@email.com"
+                    : phase === "city"
+                      ? "Ciudad"
+                      : "Ej. Nissan Versa 2022"
               }
               className="border-secondary-300 focus:ring-primary-500 flex-1 rounded-xl border bg-white px-4 py-3 text-sm focus:ring-2 focus:outline-none"
               disabled={typing}
