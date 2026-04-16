@@ -106,17 +106,47 @@ export function CampaignLanding() {
 
       </nav>
 
-      <header className="relative z-10 mx-auto max-w-3xl px-4 pb-12 pt-4 text-center sm:pt-10">
-        <p className="text-primary-700 mb-3 text-sm font-semibold tracking-wide uppercase">
+      <header className="relative z-10 mx-auto max-w-4xl px-4 pb-16 pt-8 text-center sm:pt-16">
+        <div className="mx-auto mb-6 inline-flex items-center rounded-full border border-primary-200 bg-primary-50 px-4 py-1.5 text-sm font-semibold text-primary-700 shadow-sm">
+          <span className="relative mr-2 flex h-2.5 w-2.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-400 opacity-75"></span>
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-primary-500"></span>
+          </span>
           Para propietarios
-        </p>
-        <h1 className="gradient-text mb-4 text-4xl font-bold leading-tight sm:text-5xl">
-          Deja de perder dinero con el carro en el garage
+        </div>
+        <h1 className="gradient-text mb-6 text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl sm:leading-tight">
+          Deja de perder dinero con tu carro en el garage
         </h1>
-        <p className="text-secondary-600 mx-auto max-w-xl text-lg leading-relaxed">
-          Esto es lo que de verdad nos dicen quienes quieren rentar su auto — y cómo lo resolvemos contigo.
+        <p className="text-secondary-600 mx-auto mb-10 max-w-2xl text-xl leading-relaxed">
+          Convierte tu vehículo detenido en una fuente de ingresos real. Tú pones las reglas, nosotros nos encargamos de que sea seguro y sin complicaciones.
         </p>
+        <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0">
+          <button
+            type="button"
+            onClick={openChat}
+            className="btn-gradient group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-full px-10 py-5 text-lg font-bold text-white shadow-xl ring-4 ring-primary-100 transition-all duration-300 hover:scale-105 hover:shadow-2xl active:scale-95 sm:w-auto"
+          >
+            <span className="relative z-10 flex items-center gap-2">
+              Quiero rentar mi auto
+              <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </span>
+            <div className="absolute inset-0 z-0 h-full w-full bg-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+          </button>
+          <div className="flex items-center space-x-2 text-sm font-medium text-secondary-500">
+            <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Toma menos de 2 minutos</span>
+          </div>
+        </div>
       </header>
+
+      <div className="relative z-10 mx-auto max-w-4xl px-4 text-center pb-12">
+         <h3 className="text-2xl font-bold text-secondary-900 mb-3">Esto es lo que nos dicen quienes quieren rentar su auto</h3>
+         <p className="text-secondary-600 text-lg">Y cómo lo resolvemos contigo para que ganes con tranquilidad.</p>
+      </div>
 
       <div className="relative z-10 mx-auto max-w-4xl px-4 pb-40">
         {PAIN_SECTIONS.map((section, i) => (
@@ -140,16 +170,21 @@ export function CampaignLanding() {
           </section>
         ))}
 
-        <div className="glass relative z-10 mx-auto mt-8 max-w-xl rounded-3xl p-8 text-center shadow-lg">
-          <p className="text-secondary-700 mb-6 text-sm leading-relaxed">
-            ¿Listo para que tu auto genere sin complicarte la vida? Cuéntanos lo básico en el asistente y te contactamos.
+        <div className="glass relative z-10 mx-auto mt-16 max-w-xl rounded-3xl p-10 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] sm:p-12">
+          <h4 className="mb-4 text-2xl font-bold text-secondary-900">¿Listo para dar el primer paso?</h4>
+          <p className="text-secondary-600 mb-8 text-base leading-relaxed">
+            Sin compromisos. Cuéntanos lo básico en el asistente y te contactaremos para explicarte cómo funciona.
           </p>
           <button
             type="button"
             onClick={openChat}
-            className="btn-gradient w-full rounded-2xl px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl active:scale-[0.98] sm:w-auto"
+            className="btn-gradient group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-full px-8 py-4 text-lg font-bold text-white shadow-lg ring-4 ring-primary-50 transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95 sm:w-auto mx-auto"
           >
-            Haz que tu carro trabaje por ti
+            <span className="relative z-10">Quiero rentar mi auto</span>
+            <svg className="relative z-10 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+            <div className="absolute inset-0 z-0 h-full w-full bg-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
           </button>
         </div>
       </div>
