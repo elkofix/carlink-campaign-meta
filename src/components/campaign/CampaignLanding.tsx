@@ -2,6 +2,7 @@
 
 import { campaignEvents } from "@/lib/analytics/events";
 import { LeadChat } from "@/components/campaign/LeadChat";
+import Image from "next/image";
 import { usePostHog } from "posthog-js/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -94,19 +95,17 @@ export function CampaignLanding() {
         <div className="animate-pulse-slow absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-gradient-to-br from-accent-200 to-primary-300 opacity-40 mix-blend-multiply blur-3xl filter" />
       </div>
 
-      <nav className="relative z-10 flex items-center justify-between p-6">
-        <div className="flex items-center space-x-2">
-          <div className="btn-gradient flex h-10 w-10 animate-float items-center justify-center rounded-2xl">
-            <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
-            </svg>
-          </div>
-          <span className="text-xl font-bold gradient-text">CarLink</span>
+      <header className="relative z-10 mx-auto max-w-4xl px-4 pb-16 pt-12 text-center sm:pt-16">
+        <div className="mb-8 flex justify-center sm:mb-10">
+          <Image
+            src="/Carlink-logo.png"
+            alt="CarLink"
+            width={400}
+            height={120}
+            className="h-20 w-auto max-w-[min(100%,22rem)] object-contain sm:h-28 sm:max-w-[min(100%,28rem)]"
+            priority
+          />
         </div>
-
-      </nav>
-
-      <header className="relative z-10 mx-auto max-w-4xl px-4 pb-16 pt-8 text-center sm:pt-16">
         <div className="mx-auto mb-6 inline-flex items-center rounded-full border border-primary-200 bg-primary-50 px-4 py-1.5 text-sm font-semibold text-primary-700 shadow-sm">
           <span className="relative mr-2 flex h-2.5 w-2.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-400 opacity-75"></span>
