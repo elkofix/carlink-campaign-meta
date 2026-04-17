@@ -5,7 +5,7 @@ import { type LeadAnswers, saveLead } from "@/lib/lead-storage";
 import { usePostHog } from "posthog-js/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type Phase = "name" | "email" | "city" | "vehicle" | "commission" | "plan" | "done";
+type Phase = "city" | "vehicle" | "commission" | "plan" | "name" | "email" | "done";
 
 type Msg = { role: "bot" | "user"; text: string };
 
@@ -40,7 +40,7 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
   const posthog = usePostHog();
   const bottomRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<Msg[]>([]);
-  const [phase, setPhase] = useState<Phase>("name");
+  const [phase, setPhase] = useState<Phase>("city");
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(true);
   const [answers, setAnswers] = useState<Partial<LeadAnswers>>({});
@@ -72,7 +72,7 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
     const t = window.setTimeout(() => {
       setTyping(false);
       pushBot(
-        "Hola, soy el asistente de CarLink para propietarios. Para empezar, ¿cómo te llamas?",
+        "Hola, soy el asistente de CarLink para propietarios. Para orientarte mejor, ¿en qué ciudad sueles tener el auto disponible?",
       );
       scrollDown();
     }, 900);
@@ -119,11 +119,31 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
     setInput("");
     capture(campaignEvents.chatMessageSent, { phase });
 
+    if (phase === "city") {
+      setAnswers((a) => ({ ...a, city: v }));
+      setPhase("vehicle");
+      runBotTyping(() => {
+        pushBot("Perfecto. ¿Qué marca, modelo y año es tu vehículo? (el año es opcional si no lo tienes a la mano)");
+      });
+      return;
+    }
+    if (phase === "vehicle") {
+      setAnswers((a) => ({ ...a, vehicleBrandModel: v }));
+      setPhase("commission");
+      runBotTyping(() => {
+        pushBot(
+          "¿Qué rango de comisión por viaje te encajaría bien para usar CarLink?",
+        );
+      });
+      return;
+    }
     if (phase === "name") {
       setAnswers((a) => ({ ...a, name: v }));
       setPhase("email");
       runBotTyping(() => {
-        pushBot(`Encantado, ${v}. ¿Cuál es tu correo electrónico para enviarte la información?`);
+        pushBot(
+          `Gracias, ${v}. ¿A qué correo te mandamos el resumen de lo que comentamos? (solo para este seguimiento)`,
+        );
       });
       return;
     }
@@ -134,28 +154,15 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
         posthog.identify(email, { email, name: answers.name });
       }
       capture(campaignEvents.leadEmailCaptured, { email });
-      setPhase("city");
-      runBotTyping(() => {
-        pushBot("Perfecto. ¿En qué ciudad te encuentras?");
-      });
-      return;
-    }
-    if (phase === "city") {
-      setAnswers((a) => ({ ...a, city: v }));
-      setPhase("vehicle");
-      runBotTyping(() => {
-        pushBot("¿Qué marca y modelo es tu vehículo?");
-      });
-      return;
-    }
-    if (phase === "vehicle") {
-      setAnswers((a) => ({ ...a, vehicleBrandModel: v }));
-      setPhase("commission");
-      runBotTyping(() => {
-        pushBot(
-          "¿Qué rango de comisión por viaje te resulta aceptable para usar la plataforma?",
-        );
-      });
+      const final: LeadAnswers = {
+        name: answers.name ?? "",
+        email,
+        city: answers.city ?? "",
+        vehicleBrandModel: answers.vehicleBrandModel ?? "",
+        commissionPreference: answers.commissionPreference ?? "",
+        paymentPlanInterest: answers.paymentPlanInterest ?? "",
+      };
+      finishFlow(final);
       return;
     }
   };
@@ -168,7 +175,7 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
     setPhase("plan");
     runBotTyping(() => {
       pushBot(
-        "¿Te interesa que te contactemos con información sobre planes mensuales (mantenimiento, seguros con aliados)?",
+        "¿Quieres que te contactemos con información sobre planes mensuales (por ejemplo mantenimiento o seguros con aliados)?",
       );
     });
   };
@@ -176,21 +183,12 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
   const pickPlan = (label: string) => {
     if (phase !== "plan" || typing) return;
     pushUser(label);
-    const name = answers.name ?? "";
-    const email = answers.email ?? "";
-    const city = answers.city ?? "";
-    const vehicleBrandModel = answers.vehicleBrandModel ?? "";
-    const commissionPreference = answers.commissionPreference ?? "";
-    const final: LeadAnswers = {
-      name,
-      email,
-      city,
-      vehicleBrandModel,
-      commissionPreference,
-      paymentPlanInterest: label,
-    };
+    setAnswers((a) => ({ ...a, paymentPlanInterest: label }));
     capture(campaignEvents.chatMessageSent, { phase: "plan", choice: label });
-    finishFlow(final);
+    setPhase("name");
+    runBotTyping(() => {
+      pushBot("Para el seguimiento, ¿cómo te gusta que te llamemos?");
+    });
   };
 
   return (
@@ -248,13 +246,13 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={
-                phase === "name"
-                  ? "Tu nombre"
-                  : phase === "email"
-                    ? "tu@email.com"
-                    : phase === "city"
-                      ? "Ciudad"
-                      : "Ej. Nissan Versa 2022"
+                phase === "city"
+                  ? "Ciudad"
+                  : phase === "vehicle"
+                    ? "Ej. Nissan Versa 2022"
+                    : phase === "name"
+                      ? "Tu nombre"
+                      : "tu@email.com"
               }
               className="border-secondary-300 focus:ring-primary-500 flex-1 rounded-xl border bg-white px-4 py-3 text-sm focus:ring-2 focus:outline-none"
               disabled={typing}
