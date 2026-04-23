@@ -5,7 +5,14 @@ import { type LeadAnswers, saveLead } from "@/lib/lead-storage";
 import { usePostHog } from "posthog-js/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type Phase = "city" | "vehicle" | "commission" | "plan" | "name" | "email" | "done";
+type Phase =
+  | "city"
+  | "vehicle"
+  | "commission"
+  | "plan"
+  | "name"
+  | "email"
+  | "done";
 
 type Msg = { role: "bot" | "user"; text: string };
 
@@ -61,7 +68,10 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
   }, []);
 
   const scrollDown = () => {
-    window.setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 80);
+    window.setTimeout(
+      () => bottomRef.current?.scrollIntoView({ behavior: "smooth" }),
+      80,
+    );
   };
 
   useEffect(() => {
@@ -123,7 +133,9 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
       setAnswers((a) => ({ ...a, city: v }));
       setPhase("vehicle");
       runBotTyping(() => {
-        pushBot("Perfecto. ¿Qué marca, modelo y año es tu vehículo? (el año es opcional si no lo tienes a la mano)");
+        pushBot(
+          "Perfecto. ¿Qué marca, modelo y año es tu vehículo? (el año es opcional si no lo tienes a la mano)",
+        );
       });
       return;
     }
@@ -171,11 +183,14 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
     if (phase !== "commission" || typing) return;
     pushUser(label);
     setAnswers((a) => ({ ...a, commissionPreference: label }));
-    capture(campaignEvents.chatMessageSent, { phase: "commission", choice: label });
+    capture(campaignEvents.chatMessageSent, {
+      phase: "commission",
+      choice: label,
+    });
     setPhase("plan");
     runBotTyping(() => {
       pushBot(
-        "¿Quieres que te contactemos con información sobre planes mensuales (por ejemplo mantenimiento o seguros con aliados)?",
+        "¿Te interesaría tener acceso a planes de mantenimiento y seguros con aliados?",
       );
     });
   };
@@ -199,19 +214,41 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
           onClick={onBack}
           className="text-secondary-600 hover:text-primary-700 flex items-center gap-1 text-sm font-medium"
         >
-          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <svg
+            className="h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           Volver
         </button>
         <div className="flex items-center gap-2">
           <div className="btn-gradient flex h-9 w-9 items-center justify-center rounded-xl">
-            <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            <svg
+              className="h-5 w-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+              />
             </svg>
           </div>
           <div>
-            <p className="text-secondary-900 text-sm font-semibold">Asistente CarLink</p>
+            <p className="text-secondary-900 text-sm font-semibold">
+              Asistente CarLink
+            </p>
             <p className="text-secondary-500 text-xs">Propietarios</p>
           </div>
         </div>
@@ -240,7 +277,10 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
       </div>
 
       {phase !== "done" && phase !== "commission" && phase !== "plan" && (
-        <form onSubmit={submitText} className="glass border-t-2 border-primary-100 p-4">
+        <form
+          onSubmit={submitText}
+          className="glass border-t-2 border-primary-100 p-4"
+        >
           <div className="mx-auto flex max-w-lg gap-2">
             <input
               value={input}
@@ -306,7 +346,11 @@ export function LeadChat({ onBack }: { onBack: () => void }) {
       {phase === "done" && !typing && (
         <div className="glass border-t-2 border-primary-100 p-4">
           <div className="mx-auto max-w-lg text-center">
-            <button type="button" onClick={onBack} className="text-secondary-600 text-sm font-medium underline">
+            <button
+              type="button"
+              onClick={onBack}
+              className="text-secondary-600 text-sm font-medium underline"
+            >
               Volver al inicio
             </button>
           </div>
